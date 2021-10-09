@@ -6,13 +6,14 @@
 #
 Name     : libvorbis
 Version  : 1.3.7
-Release  : 22
+Release  : 23
 URL      : http://downloads.xiph.org/releases/vorbis/libvorbis-1.3.7.tar.xz
 Source0  : http://downloads.xiph.org/releases/vorbis/libvorbis-1.3.7.tar.xz
 Source1  : http://downloads.xiph.org/releases/vorbis/libvorbis-1.3.7.tar.xz.asc
 Summary  : Vorbis Library Development
 Group    : Development/Tools
 License  : BSD-3-Clause
+Requires: libvorbis-filemap = %{version}-%{release}
 Requires: libvorbis-lib = %{version}-%{release}
 Requires: libvorbis-license = %{version}-%{release}
 BuildRequires : buildreq-cmake
@@ -59,10 +60,19 @@ Group: Documentation
 doc components for the libvorbis package.
 
 
+%package filemap
+Summary: filemap components for the libvorbis package.
+Group: Default
+
+%description filemap
+filemap components for the libvorbis package.
+
+
 %package lib
 Summary: lib components for the libvorbis package.
 Group: Libraries
 Requires: libvorbis-license = %{version}-%{release}
+Requires: libvorbis-filemap = %{version}-%{release}
 
 %description lib
 lib components for the libvorbis package.
@@ -103,20 +113,20 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1594251914
+export SOURCE_DATE_EPOCH=1633758175
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
 export NM=gcc-nm
-export CFLAGS="$CFLAGS -O3 -ffast-math -ffat-lto-objects -flto=4 -fstack-protector-strong -ftree-loop-vectorize -fzero-call-used-regs=used "
-export FCFLAGS="$FFLAGS -O3 -ffast-math -ffat-lto-objects -flto=4 -fstack-protector-strong -ftree-loop-vectorize -fzero-call-used-regs=used "
-export FFLAGS="$FFLAGS -O3 -ffast-math -ffat-lto-objects -flto=4 -fstack-protector-strong -ftree-loop-vectorize -fzero-call-used-regs=used "
-export CXXFLAGS="$CXXFLAGS -O3 -ffast-math -ffat-lto-objects -flto=4 -fstack-protector-strong -ftree-loop-vectorize -fzero-call-used-regs=used "
+export CFLAGS="$CFLAGS -O3 -ffast-math -ffat-lto-objects -flto=auto -fstack-protector-strong -ftree-loop-vectorize -fzero-call-used-regs=used "
+export FCFLAGS="$FFLAGS -O3 -ffast-math -ffat-lto-objects -flto=auto -fstack-protector-strong -ftree-loop-vectorize -fzero-call-used-regs=used "
+export FFLAGS="$FFLAGS -O3 -ffast-math -ffat-lto-objects -flto=auto -fstack-protector-strong -ftree-loop-vectorize -fzero-call-used-regs=used "
+export CXXFLAGS="$CXXFLAGS -O3 -ffast-math -ffat-lto-objects -flto=auto -fstack-protector-strong -ftree-loop-vectorize -fzero-call-used-regs=used "
 %configure --disable-static
 make  %{?_smp_mflags}
 
 pushd ../build32/
-export PKG_CONFIG_PATH="/usr/lib32/pkgconfig"
+export PKG_CONFIG_PATH="/usr/lib32/pkgconfig:/usr/share/pkgconfig"
 export ASFLAGS="${ASFLAGS}${ASFLAGS:+ }--32"
 export CFLAGS="${CFLAGS}${CFLAGS:+ }-m32 -mstackrealign"
 export CXXFLAGS="${CXXFLAGS}${CXXFLAGS:+ }-m32 -mstackrealign"
@@ -126,21 +136,21 @@ make  %{?_smp_mflags}
 popd
 unset PKG_CONFIG_PATH
 pushd ../buildavx2/
-export CFLAGS="$CFLAGS -m64 -march=haswell"
-export CXXFLAGS="$CXXFLAGS -m64 -march=haswell"
-export FFLAGS="$FFLAGS -m64 -march=haswell"
-export FCFLAGS="$FCFLAGS -m64 -march=haswell"
-export LDFLAGS="$LDFLAGS -m64 -march=haswell"
+export CFLAGS="$CFLAGS -m64 -march=x86-64-v3"
+export CXXFLAGS="$CXXFLAGS -m64 -march=x86-64-v3"
+export FFLAGS="$FFLAGS -m64 -march=x86-64-v3"
+export FCFLAGS="$FCFLAGS -m64 -march=x86-64-v3"
+export LDFLAGS="$LDFLAGS -m64 -march=x86-64-v3"
 %configure --disable-static
 make  %{?_smp_mflags}
 popd
 unset PKG_CONFIG_PATH
 pushd ../buildavx512/
-export CFLAGS="$CFLAGS -m64 -march=skylake-avx512 -mprefer-vector-width=512"
-export CXXFLAGS="$CXXFLAGS -m64 -march=skylake-avx512 -mprefer-vector-width=512"
-export FFLAGS="$FFLAGS -m64 -march=skylake-avx512 -mprefer-vector-width=512"
-export FCFLAGS="$FCFLAGS -m64 -march=skylake-avx512 -mprefer-vector-width=512"
-export LDFLAGS="$LDFLAGS -m64 -march=skylake-avx512"
+export CFLAGS="$CFLAGS -m64 -march=x86-64-v4 -mprefer-vector-width=256"
+export CXXFLAGS="$CXXFLAGS -m64 -march=x86-64-v4 -mprefer-vector-width=256"
+export FFLAGS="$FFLAGS -m64 -march=x86-64-v4 -mprefer-vector-width=256"
+export FCFLAGS="$FCFLAGS -m64 -march=x86-64-v4 -mprefer-vector-width=256"
+export LDFLAGS="$LDFLAGS -m64 -march=x86-64-v4"
 %configure --disable-static
 make  %{?_smp_mflags}
 popd
@@ -152,7 +162,7 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 make check || :
 
 %install
-export SOURCE_DATE_EPOCH=1594251914
+export SOURCE_DATE_EPOCH=1633758175
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/libvorbis
 cp %{_builddir}/libvorbis-1.3.7/COPYING %{buildroot}/usr/share/package-licenses/libvorbis/884d21ba4c65504f86801ecefe2d75f6195ef683
@@ -164,12 +174,20 @@ pushd %{buildroot}/usr/lib32/pkgconfig
 for i in *.pc ; do ln -s $i 32$i ; done
 popd
 fi
+if [ -d %{buildroot}/usr/share/pkgconfig ]
+then
+pushd %{buildroot}/usr/share/pkgconfig
+for i in *.pc ; do ln -s $i 32$i ; done
 popd
-pushd ../buildavx512/
-%make_install_avx512
+fi
 popd
 pushd ../buildavx2/
-%make_install_avx2
+%make_install_v3
+/usr/bin/elf-move.py avx2 %{buildroot}-v3 %{buildroot}/usr/share/clear/optimized-elf/ %{buildroot}/usr/share/clear/filemap/filemap-%{name}
+popd
+pushd ../buildavx512/
+%make_install_v4
+/usr/bin/elf-move.py avx512 %{buildroot}-v4 %{buildroot}/usr/share/clear/optimized-elf/ %{buildroot}/usr/share/clear/filemap/filemap-%{name}
 popd
 %make_install
 
@@ -181,12 +199,6 @@ popd
 /usr/include/vorbis/codec.h
 /usr/include/vorbis/vorbisenc.h
 /usr/include/vorbis/vorbisfile.h
-/usr/lib64/haswell/avx512_1/libvorbis.so
-/usr/lib64/haswell/avx512_1/libvorbisenc.so
-/usr/lib64/haswell/avx512_1/libvorbisfile.so
-/usr/lib64/haswell/libvorbis.so
-/usr/lib64/haswell/libvorbisenc.so
-/usr/lib64/haswell/libvorbisfile.so
 /usr/lib64/libvorbis.so
 /usr/lib64/libvorbisenc.so
 /usr/lib64/libvorbisfile.so
@@ -210,163 +222,20 @@ popd
 %files doc
 %defattr(0644,root,root,0755)
 %doc /usr/share/doc/libvorbis/*
-/usr/share/doc/libvorbis-1.3.7/doxygen-build.stamp
-/usr/share/doc/libvorbis-1.3.7/eightphase.png
-/usr/share/doc/libvorbis-1.3.7/fish_xiph_org.png
-/usr/share/doc/libvorbis-1.3.7/floor1_inverse_dB_table.html
-/usr/share/doc/libvorbis-1.3.7/floorval.png
-/usr/share/doc/libvorbis-1.3.7/fourphase.png
-/usr/share/doc/libvorbis-1.3.7/framing.html
-/usr/share/doc/libvorbis-1.3.7/helper.html
-/usr/share/doc/libvorbis-1.3.7/index.html
-/usr/share/doc/libvorbis-1.3.7/libvorbis/index.html
-/usr/share/doc/libvorbis-1.3.7/libvorbis/overview.html
-/usr/share/doc/libvorbis-1.3.7/libvorbis/reference.html
-/usr/share/doc/libvorbis-1.3.7/libvorbis/return.html
-/usr/share/doc/libvorbis-1.3.7/libvorbis/style.css
-/usr/share/doc/libvorbis-1.3.7/libvorbis/vorbis_analysis.html
-/usr/share/doc/libvorbis-1.3.7/libvorbis/vorbis_analysis_blockout.html
-/usr/share/doc/libvorbis-1.3.7/libvorbis/vorbis_analysis_buffer.html
-/usr/share/doc/libvorbis-1.3.7/libvorbis/vorbis_analysis_headerout.html
-/usr/share/doc/libvorbis-1.3.7/libvorbis/vorbis_analysis_init.html
-/usr/share/doc/libvorbis-1.3.7/libvorbis/vorbis_analysis_wrote.html
-/usr/share/doc/libvorbis-1.3.7/libvorbis/vorbis_bitrate_addblock.html
-/usr/share/doc/libvorbis-1.3.7/libvorbis/vorbis_bitrate_flushpacket.html
-/usr/share/doc/libvorbis-1.3.7/libvorbis/vorbis_block.html
-/usr/share/doc/libvorbis-1.3.7/libvorbis/vorbis_block_clear.html
-/usr/share/doc/libvorbis-1.3.7/libvorbis/vorbis_block_init.html
-/usr/share/doc/libvorbis-1.3.7/libvorbis/vorbis_comment.html
-/usr/share/doc/libvorbis-1.3.7/libvorbis/vorbis_comment_add.html
-/usr/share/doc/libvorbis-1.3.7/libvorbis/vorbis_comment_add_tag.html
-/usr/share/doc/libvorbis-1.3.7/libvorbis/vorbis_comment_clear.html
-/usr/share/doc/libvorbis-1.3.7/libvorbis/vorbis_comment_init.html
-/usr/share/doc/libvorbis-1.3.7/libvorbis/vorbis_comment_query.html
-/usr/share/doc/libvorbis-1.3.7/libvorbis/vorbis_comment_query_count.html
-/usr/share/doc/libvorbis-1.3.7/libvorbis/vorbis_commentheader_out.html
-/usr/share/doc/libvorbis-1.3.7/libvorbis/vorbis_dsp_clear.html
-/usr/share/doc/libvorbis-1.3.7/libvorbis/vorbis_dsp_state.html
-/usr/share/doc/libvorbis-1.3.7/libvorbis/vorbis_granule_time.html
-/usr/share/doc/libvorbis-1.3.7/libvorbis/vorbis_info.html
-/usr/share/doc/libvorbis-1.3.7/libvorbis/vorbis_info_blocksize.html
-/usr/share/doc/libvorbis-1.3.7/libvorbis/vorbis_info_clear.html
-/usr/share/doc/libvorbis-1.3.7/libvorbis/vorbis_info_init.html
-/usr/share/doc/libvorbis-1.3.7/libvorbis/vorbis_packet_blocksize.html
-/usr/share/doc/libvorbis-1.3.7/libvorbis/vorbis_synthesis.html
-/usr/share/doc/libvorbis-1.3.7/libvorbis/vorbis_synthesis_blockin.html
-/usr/share/doc/libvorbis-1.3.7/libvorbis/vorbis_synthesis_halfrate.html
-/usr/share/doc/libvorbis-1.3.7/libvorbis/vorbis_synthesis_halfrate_p.html
-/usr/share/doc/libvorbis-1.3.7/libvorbis/vorbis_synthesis_headerin.html
-/usr/share/doc/libvorbis-1.3.7/libvorbis/vorbis_synthesis_idheader.html
-/usr/share/doc/libvorbis-1.3.7/libvorbis/vorbis_synthesis_init.html
-/usr/share/doc/libvorbis-1.3.7/libvorbis/vorbis_synthesis_lapout.html
-/usr/share/doc/libvorbis-1.3.7/libvorbis/vorbis_synthesis_pcmout.html
-/usr/share/doc/libvorbis-1.3.7/libvorbis/vorbis_synthesis_read.html
-/usr/share/doc/libvorbis-1.3.7/libvorbis/vorbis_synthesis_restart.html
-/usr/share/doc/libvorbis-1.3.7/libvorbis/vorbis_synthesis_trackonly.html
-/usr/share/doc/libvorbis-1.3.7/libvorbis/vorbis_version_string.html
-/usr/share/doc/libvorbis-1.3.7/oggstream.html
-/usr/share/doc/libvorbis-1.3.7/programming.html
-/usr/share/doc/libvorbis-1.3.7/rfc5215.txt
-/usr/share/doc/libvorbis-1.3.7/rfc5215.xml
-/usr/share/doc/libvorbis-1.3.7/squarepolar.png
-/usr/share/doc/libvorbis-1.3.7/stereo.html
-/usr/share/doc/libvorbis-1.3.7/stream.png
-/usr/share/doc/libvorbis-1.3.7/v-comment.html
-/usr/share/doc/libvorbis-1.3.7/vorbis-clip.txt
-/usr/share/doc/libvorbis-1.3.7/vorbis-errors.txt
-/usr/share/doc/libvorbis-1.3.7/vorbis-fidelity.html
-/usr/share/doc/libvorbis-1.3.7/vorbisenc/changes.html
-/usr/share/doc/libvorbis-1.3.7/vorbisenc/examples.html
-/usr/share/doc/libvorbis-1.3.7/vorbisenc/index.html
-/usr/share/doc/libvorbis-1.3.7/vorbisenc/ovectl_ratemanage2_arg.html
-/usr/share/doc/libvorbis-1.3.7/vorbisenc/ovectl_ratemanage_arg.html
-/usr/share/doc/libvorbis-1.3.7/vorbisenc/overview.html
-/usr/share/doc/libvorbis-1.3.7/vorbisenc/reference.html
-/usr/share/doc/libvorbis-1.3.7/vorbisenc/style.css
-/usr/share/doc/libvorbis-1.3.7/vorbisenc/vorbis_encode_ctl.html
-/usr/share/doc/libvorbis-1.3.7/vorbisenc/vorbis_encode_init.html
-/usr/share/doc/libvorbis-1.3.7/vorbisenc/vorbis_encode_init_vbr.html
-/usr/share/doc/libvorbis-1.3.7/vorbisenc/vorbis_encode_setup_init.html
-/usr/share/doc/libvorbis-1.3.7/vorbisenc/vorbis_encode_setup_managed.html
-/usr/share/doc/libvorbis-1.3.7/vorbisenc/vorbis_encode_setup_vbr.html
-/usr/share/doc/libvorbis-1.3.7/vorbisfile/OggVorbis_File.html
-/usr/share/doc/libvorbis-1.3.7/vorbisfile/callbacks.html
-/usr/share/doc/libvorbis-1.3.7/vorbisfile/chaining_example_c.html
-/usr/share/doc/libvorbis-1.3.7/vorbisfile/chainingexample.html
-/usr/share/doc/libvorbis-1.3.7/vorbisfile/crosslap.html
-/usr/share/doc/libvorbis-1.3.7/vorbisfile/datastructures.html
-/usr/share/doc/libvorbis-1.3.7/vorbisfile/decoding.html
-/usr/share/doc/libvorbis-1.3.7/vorbisfile/example.html
-/usr/share/doc/libvorbis-1.3.7/vorbisfile/exampleindex.html
-/usr/share/doc/libvorbis-1.3.7/vorbisfile/fileinfo.html
-/usr/share/doc/libvorbis-1.3.7/vorbisfile/index.html
-/usr/share/doc/libvorbis-1.3.7/vorbisfile/initialization.html
-/usr/share/doc/libvorbis-1.3.7/vorbisfile/ov_bitrate.html
-/usr/share/doc/libvorbis-1.3.7/vorbisfile/ov_bitrate_instant.html
-/usr/share/doc/libvorbis-1.3.7/vorbisfile/ov_callbacks.html
-/usr/share/doc/libvorbis-1.3.7/vorbisfile/ov_clear.html
-/usr/share/doc/libvorbis-1.3.7/vorbisfile/ov_comment.html
-/usr/share/doc/libvorbis-1.3.7/vorbisfile/ov_crosslap.html
-/usr/share/doc/libvorbis-1.3.7/vorbisfile/ov_fopen.html
-/usr/share/doc/libvorbis-1.3.7/vorbisfile/ov_info.html
-/usr/share/doc/libvorbis-1.3.7/vorbisfile/ov_open.html
-/usr/share/doc/libvorbis-1.3.7/vorbisfile/ov_open_callbacks.html
-/usr/share/doc/libvorbis-1.3.7/vorbisfile/ov_pcm_seek.html
-/usr/share/doc/libvorbis-1.3.7/vorbisfile/ov_pcm_seek_lap.html
-/usr/share/doc/libvorbis-1.3.7/vorbisfile/ov_pcm_seek_page.html
-/usr/share/doc/libvorbis-1.3.7/vorbisfile/ov_pcm_seek_page_lap.html
-/usr/share/doc/libvorbis-1.3.7/vorbisfile/ov_pcm_tell.html
-/usr/share/doc/libvorbis-1.3.7/vorbisfile/ov_pcm_total.html
-/usr/share/doc/libvorbis-1.3.7/vorbisfile/ov_raw_seek.html
-/usr/share/doc/libvorbis-1.3.7/vorbisfile/ov_raw_seek_lap.html
-/usr/share/doc/libvorbis-1.3.7/vorbisfile/ov_raw_tell.html
-/usr/share/doc/libvorbis-1.3.7/vorbisfile/ov_raw_total.html
-/usr/share/doc/libvorbis-1.3.7/vorbisfile/ov_read.html
-/usr/share/doc/libvorbis-1.3.7/vorbisfile/ov_read_filter.html
-/usr/share/doc/libvorbis-1.3.7/vorbisfile/ov_read_float.html
-/usr/share/doc/libvorbis-1.3.7/vorbisfile/ov_seekable.html
-/usr/share/doc/libvorbis-1.3.7/vorbisfile/ov_serialnumber.html
-/usr/share/doc/libvorbis-1.3.7/vorbisfile/ov_streams.html
-/usr/share/doc/libvorbis-1.3.7/vorbisfile/ov_test.html
-/usr/share/doc/libvorbis-1.3.7/vorbisfile/ov_test_callbacks.html
-/usr/share/doc/libvorbis-1.3.7/vorbisfile/ov_test_open.html
-/usr/share/doc/libvorbis-1.3.7/vorbisfile/ov_time_seek.html
-/usr/share/doc/libvorbis-1.3.7/vorbisfile/ov_time_seek_lap.html
-/usr/share/doc/libvorbis-1.3.7/vorbisfile/ov_time_seek_page.html
-/usr/share/doc/libvorbis-1.3.7/vorbisfile/ov_time_seek_page_lap.html
-/usr/share/doc/libvorbis-1.3.7/vorbisfile/ov_time_tell.html
-/usr/share/doc/libvorbis-1.3.7/vorbisfile/ov_time_total.html
-/usr/share/doc/libvorbis-1.3.7/vorbisfile/overview.html
-/usr/share/doc/libvorbis-1.3.7/vorbisfile/reference.html
-/usr/share/doc/libvorbis-1.3.7/vorbisfile/seekexample.html
-/usr/share/doc/libvorbis-1.3.7/vorbisfile/seeking.html
-/usr/share/doc/libvorbis-1.3.7/vorbisfile/seeking_example_c.html
-/usr/share/doc/libvorbis-1.3.7/vorbisfile/seeking_test_c.html
-/usr/share/doc/libvorbis-1.3.7/vorbisfile/seekingexample.html
-/usr/share/doc/libvorbis-1.3.7/vorbisfile/style.css
-/usr/share/doc/libvorbis-1.3.7/vorbisfile/threads.html
-/usr/share/doc/libvorbis-1.3.7/vorbisfile/vorbisfile_example_c.html
+
+%files filemap
+%defattr(-,root,root,-)
+/usr/share/clear/filemap/filemap-libvorbis
 
 %files lib
 %defattr(-,root,root,-)
-/usr/lib64/haswell/avx512_1/libvorbis.so.0
-/usr/lib64/haswell/avx512_1/libvorbis.so.0.4.9
-/usr/lib64/haswell/avx512_1/libvorbisenc.so.2
-/usr/lib64/haswell/avx512_1/libvorbisenc.so.2.0.12
-/usr/lib64/haswell/avx512_1/libvorbisfile.so.3
-/usr/lib64/haswell/avx512_1/libvorbisfile.so.3.3.8
-/usr/lib64/haswell/libvorbis.so.0
-/usr/lib64/haswell/libvorbis.so.0.4.9
-/usr/lib64/haswell/libvorbisenc.so.2
-/usr/lib64/haswell/libvorbisenc.so.2.0.12
-/usr/lib64/haswell/libvorbisfile.so.3
-/usr/lib64/haswell/libvorbisfile.so.3.3.8
 /usr/lib64/libvorbis.so.0
 /usr/lib64/libvorbis.so.0.4.9
 /usr/lib64/libvorbisenc.so.2
 /usr/lib64/libvorbisenc.so.2.0.12
 /usr/lib64/libvorbisfile.so.3
 /usr/lib64/libvorbisfile.so.3.3.8
+/usr/share/clear/optimized-elf/lib*
 
 %files lib32
 %defattr(-,root,root,-)
