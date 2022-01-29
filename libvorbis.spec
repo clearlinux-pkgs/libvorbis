@@ -6,7 +6,7 @@
 #
 Name     : libvorbis
 Version  : 1.3.7
-Release  : 24
+Release  : 25
 URL      : http://downloads.xiph.org/releases/vorbis/libvorbis-1.3.7.tar.xz
 Source0  : http://downloads.xiph.org/releases/vorbis/libvorbis-1.3.7.tar.xz
 Source1  : http://downloads.xiph.org/releases/vorbis/libvorbis-1.3.7.tar.xz.asc
