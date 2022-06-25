@@ -6,14 +6,13 @@
 #
 Name     : libvorbis
 Version  : 1.3.7
-Release  : 26
+Release  : 27
 URL      : http://downloads.xiph.org/releases/vorbis/libvorbis-1.3.7.tar.xz
 Source0  : http://downloads.xiph.org/releases/vorbis/libvorbis-1.3.7.tar.xz
 Source1  : http://downloads.xiph.org/releases/vorbis/libvorbis-1.3.7.tar.xz.asc
 Summary  : Vorbis Library Development
 Group    : Development/Tools
 License  : BSD-3-Clause
-Requires: libvorbis-filemap = %{version}-%{release}
 Requires: libvorbis-lib = %{version}-%{release}
 Requires: libvorbis-license = %{version}-%{release}
 BuildRequires : buildreq-cmake
@@ -60,19 +59,10 @@ Group: Documentation
 doc components for the libvorbis package.
 
 
-%package filemap
-Summary: filemap components for the libvorbis package.
-Group: Default
-
-%description filemap
-filemap components for the libvorbis package.
-
-
 %package lib
 Summary: lib components for the libvorbis package.
 Group: Libraries
 Requires: libvorbis-license = %{version}-%{release}
-Requires: libvorbis-filemap = %{version}-%{release}
 
 %description lib
 lib components for the libvorbis package.
@@ -113,7 +103,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1633758175
+export SOURCE_DATE_EPOCH=1656134087
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
@@ -136,9 +126,9 @@ make  %{?_smp_mflags}
 popd
 unset PKG_CONFIG_PATH
 pushd ../buildavx2/
-export CFLAGS="$CFLAGS -m64 -march=x86-64-v3"
-export CXXFLAGS="$CXXFLAGS -m64 -march=x86-64-v3"
-export FFLAGS="$FFLAGS -m64 -march=x86-64-v3"
+export CFLAGS="$CFLAGS -m64 -march=x86-64-v3 -Wl,-z,x86-64-v3"
+export CXXFLAGS="$CXXFLAGS -m64 -march=x86-64-v3 -Wl,-z,x86-64-v3"
+export FFLAGS="$FFLAGS -m64 -march=x86-64-v3 -Wl,-z,x86-64-v3"
 export FCFLAGS="$FCFLAGS -m64 -march=x86-64-v3"
 export LDFLAGS="$LDFLAGS -m64 -march=x86-64-v3"
 %configure --disable-static
@@ -146,8 +136,8 @@ make  %{?_smp_mflags}
 popd
 unset PKG_CONFIG_PATH
 pushd ../buildavx512/
-export CFLAGS="$CFLAGS -m64 -march=x86-64-v4 -mprefer-vector-width=256"
-export CXXFLAGS="$CXXFLAGS -m64 -march=x86-64-v4 -mprefer-vector-width=256"
+export CFLAGS="$CFLAGS -m64 -march=x86-64-v4 -mprefer-vector-width=256 -Wl,-z,x86-64-v4"
+export CXXFLAGS="$CXXFLAGS -m64 -march=x86-64-v4 -mprefer-vector-width=256 -Wl,-z,x86-64-v4"
 export FFLAGS="$FFLAGS -m64 -march=x86-64-v4 -mprefer-vector-width=256"
 export FCFLAGS="$FCFLAGS -m64 -march=x86-64-v4 -mprefer-vector-width=256"
 export LDFLAGS="$LDFLAGS -m64 -march=x86-64-v4"
@@ -162,7 +152,7 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 make check || :
 
 %install
-export SOURCE_DATE_EPOCH=1633758175
+export SOURCE_DATE_EPOCH=1656134087
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/libvorbis
 cp %{_builddir}/libvorbis-1.3.7/COPYING %{buildroot}/usr/share/package-licenses/libvorbis/884d21ba4c65504f86801ecefe2d75f6195ef683
@@ -183,13 +173,13 @@ fi
 popd
 pushd ../buildavx2/
 %make_install_v3
-/usr/bin/elf-move.py avx2 %{buildroot}-v3 %{buildroot}/usr/share/clear/optimized-elf/ %{buildroot}/usr/share/clear/filemap/filemap-%{name}
 popd
 pushd ../buildavx512/
 %make_install_v4
-/usr/bin/elf-move.py avx512 %{buildroot}-v4 %{buildroot}/usr/share/clear/optimized-elf/ %{buildroot}/usr/share/clear/filemap/filemap-%{name}
 popd
 %make_install
+/usr/bin/elf-move.py avx2 %{buildroot}-v3 %{buildroot} %{buildroot}/usr/share/clear/filemap/filemap-%{name}
+/usr/bin/elf-move.py avx512 %{buildroot}-v4 %{buildroot} %{buildroot}/usr/share/clear/filemap/filemap-%{name}
 
 %files
 %defattr(-,root,root,-)
@@ -223,19 +213,32 @@ popd
 %defattr(0644,root,root,0755)
 %doc /usr/share/doc/libvorbis/*
 
-%files filemap
-%defattr(-,root,root,-)
-/usr/share/clear/filemap/filemap-libvorbis
-
 %files lib
 %defattr(-,root,root,-)
+/usr/lib64/glibc-hwcaps/x86-64-v3/libvorbis.so
+/usr/lib64/glibc-hwcaps/x86-64-v3/libvorbis.so.0
+/usr/lib64/glibc-hwcaps/x86-64-v3/libvorbis.so.0.4.9
+/usr/lib64/glibc-hwcaps/x86-64-v3/libvorbisenc.so
+/usr/lib64/glibc-hwcaps/x86-64-v3/libvorbisenc.so.2
+/usr/lib64/glibc-hwcaps/x86-64-v3/libvorbisenc.so.2.0.12
+/usr/lib64/glibc-hwcaps/x86-64-v3/libvorbisfile.so
+/usr/lib64/glibc-hwcaps/x86-64-v3/libvorbisfile.so.3
+/usr/lib64/glibc-hwcaps/x86-64-v3/libvorbisfile.so.3.3.8
+/usr/lib64/glibc-hwcaps/x86-64-v4/libvorbis.so
+/usr/lib64/glibc-hwcaps/x86-64-v4/libvorbis.so.0
+/usr/lib64/glibc-hwcaps/x86-64-v4/libvorbis.so.0.4.9
+/usr/lib64/glibc-hwcaps/x86-64-v4/libvorbisenc.so
+/usr/lib64/glibc-hwcaps/x86-64-v4/libvorbisenc.so.2
+/usr/lib64/glibc-hwcaps/x86-64-v4/libvorbisenc.so.2.0.12
+/usr/lib64/glibc-hwcaps/x86-64-v4/libvorbisfile.so
+/usr/lib64/glibc-hwcaps/x86-64-v4/libvorbisfile.so.3
+/usr/lib64/glibc-hwcaps/x86-64-v4/libvorbisfile.so.3.3.8
 /usr/lib64/libvorbis.so.0
 /usr/lib64/libvorbis.so.0.4.9
 /usr/lib64/libvorbisenc.so.2
 /usr/lib64/libvorbisenc.so.2.0.12
 /usr/lib64/libvorbisfile.so.3
 /usr/lib64/libvorbisfile.so.3.3.8
-/usr/share/clear/optimized-elf/lib*
 
 %files lib32
 %defattr(-,root,root,-)
