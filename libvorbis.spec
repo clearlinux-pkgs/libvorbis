@@ -6,7 +6,7 @@
 #
 Name     : libvorbis
 Version  : 1.3.7
-Release  : 31
+Release  : 32
 URL      : http://downloads.xiph.org/releases/vorbis/libvorbis-1.3.7.tar.xz
 Source0  : http://downloads.xiph.org/releases/vorbis/libvorbis-1.3.7.tar.xz
 Source1  : http://downloads.xiph.org/releases/vorbis/libvorbis-1.3.7.tar.xz.asc
@@ -103,15 +103,15 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1656134087
+export SOURCE_DATE_EPOCH=1664931521
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
 export NM=gcc-nm
-export CFLAGS="$CFLAGS -O3 -ffast-math -ffat-lto-objects -flto=auto -fstack-protector-strong -ftree-loop-vectorize -fzero-call-used-regs=used "
-export FCFLAGS="$FFLAGS -O3 -ffast-math -ffat-lto-objects -flto=auto -fstack-protector-strong -ftree-loop-vectorize -fzero-call-used-regs=used "
-export FFLAGS="$FFLAGS -O3 -ffast-math -ffat-lto-objects -flto=auto -fstack-protector-strong -ftree-loop-vectorize -fzero-call-used-regs=used "
-export CXXFLAGS="$CXXFLAGS -O3 -ffast-math -ffat-lto-objects -flto=auto -fstack-protector-strong -ftree-loop-vectorize -fzero-call-used-regs=used "
+export CFLAGS="$CFLAGS -O3 -ffast-math -ffat-lto-objects -flto=auto -ftree-loop-vectorize "
+export FCFLAGS="$FFLAGS -O3 -ffast-math -ffat-lto-objects -flto=auto -ftree-loop-vectorize "
+export FFLAGS="$FFLAGS -O3 -ffast-math -ffat-lto-objects -flto=auto -ftree-loop-vectorize "
+export CXXFLAGS="$CXXFLAGS -O3 -ffast-math -ffat-lto-objects -flto=auto -ftree-loop-vectorize "
 %configure --disable-static
 make  %{?_smp_mflags}
 
@@ -152,10 +152,10 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 make check || :
 
 %install
-export SOURCE_DATE_EPOCH=1656134087
+export SOURCE_DATE_EPOCH=1664931521
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/libvorbis
-cp %{_builddir}/libvorbis-1.3.7/COPYING %{buildroot}/usr/share/package-licenses/libvorbis/884d21ba4c65504f86801ecefe2d75f6195ef683
+cp %{_builddir}/libvorbis-%{version}/COPYING %{buildroot}/usr/share/package-licenses/libvorbis/884d21ba4c65504f86801ecefe2d75f6195ef683 || :
 pushd ../build32/
 %make_install32
 if [ -d  %{buildroot}/usr/lib32/pkgconfig ]
@@ -189,6 +189,12 @@ popd
 /usr/include/vorbis/codec.h
 /usr/include/vorbis/vorbisenc.h
 /usr/include/vorbis/vorbisfile.h
+/usr/lib64/glibc-hwcaps/x86-64-v3/libvorbis.so
+/usr/lib64/glibc-hwcaps/x86-64-v3/libvorbisenc.so
+/usr/lib64/glibc-hwcaps/x86-64-v3/libvorbisfile.so
+/usr/lib64/glibc-hwcaps/x86-64-v4/libvorbis.so
+/usr/lib64/glibc-hwcaps/x86-64-v4/libvorbisenc.so
+/usr/lib64/glibc-hwcaps/x86-64-v4/libvorbisfile.so
 /usr/lib64/libvorbis.so
 /usr/lib64/libvorbisenc.so
 /usr/lib64/libvorbisfile.so
@@ -215,22 +221,16 @@ popd
 
 %files lib
 %defattr(-,root,root,-)
-/usr/lib64/glibc-hwcaps/x86-64-v3/libvorbis.so
 /usr/lib64/glibc-hwcaps/x86-64-v3/libvorbis.so.0
 /usr/lib64/glibc-hwcaps/x86-64-v3/libvorbis.so.0.4.9
-/usr/lib64/glibc-hwcaps/x86-64-v3/libvorbisenc.so
 /usr/lib64/glibc-hwcaps/x86-64-v3/libvorbisenc.so.2
 /usr/lib64/glibc-hwcaps/x86-64-v3/libvorbisenc.so.2.0.12
-/usr/lib64/glibc-hwcaps/x86-64-v3/libvorbisfile.so
 /usr/lib64/glibc-hwcaps/x86-64-v3/libvorbisfile.so.3
 /usr/lib64/glibc-hwcaps/x86-64-v3/libvorbisfile.so.3.3.8
-/usr/lib64/glibc-hwcaps/x86-64-v4/libvorbis.so
 /usr/lib64/glibc-hwcaps/x86-64-v4/libvorbis.so.0
 /usr/lib64/glibc-hwcaps/x86-64-v4/libvorbis.so.0.4.9
-/usr/lib64/glibc-hwcaps/x86-64-v4/libvorbisenc.so
 /usr/lib64/glibc-hwcaps/x86-64-v4/libvorbisenc.so.2
 /usr/lib64/glibc-hwcaps/x86-64-v4/libvorbisenc.so.2.0.12
-/usr/lib64/glibc-hwcaps/x86-64-v4/libvorbisfile.so
 /usr/lib64/glibc-hwcaps/x86-64-v4/libvorbisfile.so.3
 /usr/lib64/glibc-hwcaps/x86-64-v4/libvorbisfile.so.3.3.8
 /usr/lib64/libvorbis.so.0
